@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 /**
  * Implementation of {@link java.sql.Statement}
@@ -143,7 +144,26 @@ public abstract class AvaticaStatement
     }
   }
 
+  // Weekday function replacement pattern
+  public static final Pattern WEEKDAY_PATTERN = Pattern.compile(
+      "(".concat("\\{fn\\s*?DAYOFWEEK\\s*?\\(.*?\\)\\s*?\\}")
+      .concat("|TIME_EXTRACT\\s*?\\([^,]+,\\s*?'(dow|isodow)'\\s*?(,\\s*?'.*'\\s*?)*?\\)")
+      .concat("|EXTRACT\\s*?\\((dow|isodow)\\s*?FROM\\s*?.*?\\s*?\\)")
+      .concat(")"),
+      Pattern.CASE_INSENSITIVE);
+
+  // Weekday function replacement helper
+  public static String substituteWeekDay(String sql) {
+    return WEEKDAY_PATTERN
+      .matcher(sql)
+      .replaceAll(
+      "(case ($1) when 7 then 1 else ($1) + 1 end)");
+  }
+
   protected void executeInternal(String sql) throws SQLException {
+    // patch sql
+    sql = substituteWeekDay(sql);
+
     // reset previous state before moving forward.
     this.updateCount = -1;
     try {
