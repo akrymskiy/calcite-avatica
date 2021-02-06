@@ -16,16 +16,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 {% endcomment %}
 -->
-[![Build Status](https://travis-ci.org/apache/calcite-avatica.svg?branch=master)](https://travis-ci.org/apache/calcite-avatica)
-[![CI Status](https://github.com/apache/calcite-avatica/workflows/CI/badge.svg)](https://github.com/apache/calcite-avatica/actions)
-
 # Apache Calcite -- Avatica
 
-Apache Calcite's Avatica is a framework for building database drivers.
+The purpose of this fork is to solve a specific issue querying data in Apache Druid from Tableau, where weekday names are incorrectly presented due to Tableau expecting `Sunday=1, ..., Saturday=7` and Druid using the `Monday=1, ..., Sunday=7` scheme. The "fix" is accomplished by modifying SQL string passed into `AvaticaStatement.executeInternal` method, wrapping weekday related functions into a SQL CASE statement, which adjust the numeric values returned by Druid to Tableau's liking.
 
-Avatica is a sub-project of [Apache Calcite](https://calcite.apache.org).
-
-For more details, see the [home page](https://calcite.apache.org/avatica).
-
-Release notes for all published versions are available on the [history
-page](https://calcite.apache.org/avatica/docs/history.html).
+To build the shaded JDBC jar - clone this repository and issue the following in the repository root folder:  
+  
+**Mac/Unix:**  
+> ./gradle build -p shaded -Prelease
+  
+**Windows:**  
+> gradlew build -p shaded -Prelease
+  
