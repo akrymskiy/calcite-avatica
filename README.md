@@ -18,7 +18,7 @@ limitations under the License.
 -->
 # Apache Calcite -- Avatica
 
-The purpose of this fork is to solve a specific issue querying data in Apache Druid from Tableau, where weekday names are incorrectly presented due to Tableau expecting `Sunday=1, ..., Saturday=7` and Druid using the `Monday=1, ..., Sunday=7` scheme. The "fix" is accomplished by modifying SQL string passed into `AvaticaStatement.executeInternal` method, wrapping weekday related functions into a SQL CASE statement, which adjust the numeric values returned by Druid to Tableau's liking.
+The purpose of this fork is to solve a specific issue querying data in Apache Druid from Tableau, where weekday names are incorrectly presented due to Tableau expecting `Sunday=1, ..., Saturday=7` and Druid using the `Monday=1, ..., Sunday=7` scheme. The "fix" is accomplished by [modifying SQL string](https://github.com/akrymskiy/calcite-avatica/blob/master/core/src/main/java/org/apache/calcite/avatica/AvaticaStatement.java#L165) passed into `AvaticaStatement.executeInternal` method, wrapping weekday related functions into a SQL CASE statement, which adjust the numeric values returned by Druid to Tableau's liking.
 
 To build the shaded JDBC jar - clone this repository and issue the following in the repository root folder:  
   
